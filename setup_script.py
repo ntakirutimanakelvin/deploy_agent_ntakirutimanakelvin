@@ -17,12 +17,58 @@ setup_project() {
 
     echo "Copying required application resources..."
 
-    cp "source/attendance_checker.py" "$root_dir/"
-    cp "source/assets.csv" "$root_dir/Helpers/"
-    cp "source/config.json" "$root_dir/Helpers/"
-    cp "source/reports.log" "$root_dir/reports/"
+    cp "resources/attendance_checker.py" "$root_dir/"
+    cp "resources/assets.csv" "$root_dir/Helpers/"
+    cp "resources/config.json" "$root_dir/Helpers/"
+    cp "resources/reports.log" "$root_dir/reports/"
 
     echo "Resource deployment completed."
 
     configure_thresholds
+}
+
+configure_thresholds() {
+    echo ""
+    echo "=== Threshold Stage ==="
+
+    read -p "Would you like to customize attendance limits? (y/n): " choice
+
+    case "$choice" in
+        y|Y)
+
+            while true
+            do
+                read -p "Enter warning percentage: " warn_limit
+
+                if [[ "$warn_limit" =~ ^[0-9]+$ ]]; then
+                    break
+                fi
+
+                echo "Invalid value. Numbers only."
+            done
+
+            while true
+            do
+                read -p "Enter failure percentage: " fail_limit
+
+                if [[ "$fail_limit" =~ ^[0-9]+$ ]]; then
+                    break
+                fi
+
+                echo "Invalid value. Numbers only."
+            done
+
+            sed -Ei \
+                -e 's|("warning": )[0-9]+|\1'"$warn_limit"'|' \
+                -e 's|("failure": )[0-9]+|\1'"$fail_limit"'|' \
+                "$root_dir/resources/config.json"
+
+            echo "Thresholds updated successfully."
+            ;;
+        *)
+            echo "Using default attendance limits."
+            ;;
+    esac
+
+    run_diagnostics
 }
