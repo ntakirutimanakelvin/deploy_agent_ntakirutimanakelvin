@@ -108,3 +108,30 @@ check_path() {
         echo "MISSING: $description"
     fi
 }
+
+handle_exit_signal() {
+    echo ""
+    echo "Interrupt signal received."
+    echo "Creating backup before shutdown..."
+
+    if [ ! -d "$root_dir" ]
+    then
+        echo "No active workspace found."
+        exit 1
+    fi
+
+    backup_file="${root_dir}_backup.tar.gz"
+
+    tar -czf "$backup_file" "$root_dir"
+
+    echo "Backup stored as: $backup_file"
+
+    rm -rf "$root_dir"
+
+    echo "Temporary workspace removed."
+    echo "Shutdown complete."
+
+    exit 0
+}
+
+setup_project
