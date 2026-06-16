@@ -94,8 +94,8 @@ run_diagnostics() {
 
     check_path "$root_dir" "Workspace Directory"
     check_path "$root_dir/attendance_checker.py" "Main Python Script"
-    check_path "$root_dir/resources/assets.csv" "Asset Data File"
-    check_path "$root_dir/resources/config.json" "Configuration File"
+    check_path "$root_dir/Helpers/assets.csv" "Asset data file"
+    check_path "$root_dir/Helpers/cnfig.json" "Configuration file"
     check_path "$root_dir/logs/reports.log" "Report Log"
 }
 
